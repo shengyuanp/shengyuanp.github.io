@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+    #displayText {
+        position: absolute;
+        top: 35%;
+        left: 30%;
+        transform: translate(-50%, -50%);
+        font-size: 2em;
+        text-align: left;
+    }
+
+    .word {
+        opacity: 0;
+        display: inline-block;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .show {
+        opacity: 1 !important;
+    }
+
+    #dropdownContainer {
+            position: absolute;
+            right: 25%;
+            top: 30%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+        #buttons {
+            margin-top: 20px;  /* Adds a 20px margin to the top of the buttons container */
+        }
+        #chart {
+            position: relative;
+            margin-bottom: 20px;  /* Adds a 20px margin to the bottom of the chart container */
+    }
+
+</style>
+</head>
+<body>
+    <h1>Age-Adjusted Rate of National Drug Overdose Deaths per 100,000 Population by Demographic</h1>
+    <div id="displayText"></div>
+    <div id="chart"></div>
+    <div id="dropdownContainer">
+        <div id="buttons">
+            <button onclick="showSlide(1)">Impact of Covid-19</button>
+            <button onclick="showSlide(2)">Vulnerable Racial Groups</button>
+            <button onclick="showSlide(3)">Gender gap</button>
+        </div>
+
+        <p>By Race:</p>
+        <select id="race" onchange="updateChart('race')" disabled>
+            <option value="Overall" selected>Overall</option>
+            <option value="White">White</option>
+            <option value="Black">Black</option>
+            <option value="Hispanic">Hispanic</option>
+            <option value="American Indian">American Indian or Alaska Native</option>
+        </select>
+        <p>By Gender:</p>
+        <select id="gender" onchange="updateChart('gender')" disabled>
+            <option value="Overall" selected>Overall</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+        </select>
+        
+    </div>
+    <script>
+        var margin = {top: 20, right: 20, bottom: 30, left: 50},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var svg = d3.select("#chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scaleTime().range([0, width]),
+            y = d3.scaleLinear().range([height, 0]);
+
+        var line = d3.line()
+            .x(function(d) { return x(d.year); })
+            .y(function(d) { return y(d.value); });
+        
+        var tickValues = d3.range(1999, 2022).map(d3.timeParse("%Y")); // Generate an array of years from 1999 to 2021
+
+        var data; // Global variable to store the data
+        let slideNumber = 0; // Default value
+ 
+        var races = ["Overall","White","Black","Hispanic","American Indian"]
+        var races_slide2 = ["Overall","Black","American Indian"]
+        var genders =["Overall","Female","Male"]
+        var races_genders=["Overall","White","Black","Hispanic","American Indian","Female","Male"]
+        var colorScaleRacesGenders = d3.scaleOrdinal()
+                    .domain(races_genders)
+                    .range(races_genders.map(val => {
+                        if (val === 'Overall') return 'black';
+                        if (val === 'Male') return 'blue';
+                        if (val === 'Female') return 'red';
+                        return d3.schemeCategory10[races_genders.indexOf(val)]; // Assign colors to other races/genders
+                    }));
+
+        let text1 = "";
+        let text2 = "";
+        let text3 = "";
+
+        function updateChart(type) {
+            var race = document.getElementById("race").value;
+            var gender = document.getElementById("gender").value;
+            // If race or gender is not selected (empty string), set it to 'Overall'
+            // race = race === "" ? 'Overall' : race;
+            // gender = gender === "" ? 'Overall' : gender;
+            var filteredData = filterData(race, gender);
+            if (type=='race'){
+                svg.selectAll("*").remove();
+                drawRaceDropDown(race,filteredData)
+
+                // Add legend
+                var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", "translate(20, 20)"); // Adjust the translation to position the legend
+
+                    races.forEach((race, i) => {
+                    legend.append("circle")
+                    .attr("class", "legend-dot")
+                    .attr("cx", 0)
+                    .attr("cy", i * 25)
+                    .attr("r", 5)
+                    .style("fill", colorScaleRacesGenders(race));
+
+                    legend.append("text")
+                    .attr("class", "legend-text")
+                    .attr("x", 10)
+                    .attr("y", 5 + i * 25)
+                    .text(race);
+                });
+
+            // Axes
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).tickValues(tickValues));
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(d3.axisLeft(y));
+             }
+            else if (type=="gender"){
+                svg.selectAll("*").remove();
+                drawRaceDropDown(gender,filteredData)
+                // Add legend
+                var legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("transform", "translate(20, 20)"); // Adjust the translation to position the legend
+
+                    genders.forEach((gender, i) => {
+                        legend.append("circle")
+                            .attr("class", "legend-dot")
+                            .attr("cx", 0)
+                            .attr("cy", i * 25)
+                            .attr("r", 5)
+                            .style("fill", colorScaleRacesGenders(gender));
+
+                        legend.append("text")
+                            .attr("class", "legend-text")
+                            .attr("x", 10)
+                            .attr("y", 5 + i * 25)
+                            .text(gender);
+                    });
+
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(d3.axisBottom(x).tickValues(tickValues));
+
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(d3.axisLeft(y));
+
+            }
+            // drawChart(filteredData);
+        }
+
+        function updateChartSlide(slideNumber) {
+            var filteredData = filterDataSlide(slideNumber);
+            drawChartSlide(filteredData,slideNumber);
+        }
+        
+        function filterDataSlide(slideNumber) {
+
+            if (slideNumber === 1) {
+                filteredData = data.filter(d => d.gender === 'Overall' && d.race=='Overall');
+            } 
+            else if (slideNumber === 2) {
+                filteredData = data.filter(d => d.gender === 'Overall');
+            } 
+            else if (slideNumber === 3) {
+                filteredData = data.filter(d => d.race === 'Overall');
+            }
+            // console.log('Number of rows in filtered data:', filteredData.length);
+            // console.log("Data:", filteredData); 
+            return filteredData;
+        }
+
+        async function loadData() {
+            data = await d3.csv("./data/data.csv", function(d) {
+                d.year = d3.timeParse("%Y")(d.year);
+                d.value = +d.value;
+                // console.log(d);
+                return d;
+            });
+        }
+
+        function filterData(race, gender) {
+            // console.log("Race:", race); 
+            // console.log("Gender:", gender); 
+            var filteredData = data.filter(d => d.race === race && d.gender === gender);
+            // console.log(filteredData); 
+            return filteredData;
+        }
+        
+        // Function to draw a single race
+        function drawRaceDropDown(val, data) {
+            var path = svg.append("path")
+                .datum(data)
+                .attr("class", "line line-" + val) // Unique class name
+                .attr("d", line)
+                .style("fill", "none")
+                .style("stroke", colorScaleRacesGenders(val))
+                .style("stroke-width", 1.5);
+            
+            var totalLength = path.node().getTotalLength();
+
+            path.attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0);
+
+            // Add dots with a delay to match the line animation
+            data.forEach(function(d, i) {
+                svg.append("circle")
+                    .attr("class", "dot dot-" + val) // Unique class name
+                    .attr("cx", x(d.year))
+                    .attr("cy", y(d.value))
+                    .attr("r", 0) // initial radius of circle set to 0 for animation
+                    .style("fill", colorScaleRacesGenders(val))
+                    .transition()
+                    .delay(i * (2000 /data.length)) // delay for each dot, dividing total time by the number of data points
+                    .duration(500) // duration of the transition
+                    .attr("r", 3); // final radius of circle after transition
+            });
+        }
+
+        // Function to draw a single race
+        function drawRace(index, data, del,races,race_to_delete) {
+            var race = races[index];
+            var raceData = data.filter(d => d.race === race);
+            // Remove elements for this race if del flag is set to 'y'
+            if (del == 'y') {
+                svg.selectAll(".line-" + race_to_delete).remove();
+                svg.selectAll(".dot-" + race_to_delete).remove();
+            } 
+                
+            var path = svg.append("path")
+                .datum(raceData)
+                .attr("class", "line line-" + race) // Unique class name
+                .attr("d", line)
+                .style("fill", "none")
+                .style("stroke", colorScaleRacesGenders(race))
+                .style("stroke-width", 1.5);
+            
+            var totalLength = path.node().getTotalLength();
+
+            path.attr("stroke-dasharray", totalLength + " " + totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0);
+
+            // Add dots with a delay to match the line animation
+            raceData.forEach(function(d, i) {
+                svg.append("circle")
+                    .attr("class", "dot dot-" + race) // Unique class name
+                    .attr("cx", x(d.year))
+                    .attr("cy", y(d.value))
+                    .attr("r", 0) // initial radius of circle set to 0 for animation
+                    .style("fill", colorScaleRacesGenders(race))
+                    .transition()
+                    .delay(i * (2000 / raceData.length)) // delay for each dot, dividing total time by the number of data points
+                    .duration(500) // duration of the transition
+                    .attr("r", 3); // final radius of circle after transition
+            });
+        }
+
+        function drawChartSlide(data,slideNumber) {
+            x.domain([d3.timeParse("%Y")("1999"), d3.timeParse("%Y")("2021")]); // x-axis from 1999 to 2021
+            y.domain([0, 70]); // replace 0 and 100 with the minimum and maximum y values you want
+
+            if (slideNumber == 1) {
+                    svg.selectAll("*").remove();
+
+                    var splitIndex = data.findIndex(d => d.year >= d3.timeParse("%Y")("2019")); // find the index where year becomes 2020
+
+                    var data1 = data.slice(0, splitIndex + 1); // data until 2019 included
+                    var data2 = data.slice(splitIndex); // data from 2019 onwards
+
+                    // Draw the line until 2019
+                    var path1 = svg.append("path")
+                        .datum(data1)
+                        .attr("class", "line")
+                        .attr("d", line)
+                        .style("fill", "none")
+                        .style("stroke", "black")
+                        .style("stroke-width", 1.5);
+
+                    // Animate the line drawing
+                    var totalLength1 = path1.node().getTotalLength();
+
+                    path1.attr("stroke-dasharray", totalLength1 + " " + totalLength1)
+                        .attr("stroke-dashoffset", totalLength1)
+                        .transition()
+                            .duration(2000) // duration of animation in milliseconds
+                            .ease(d3.easeLinear)
+                            .attr("stroke-dashoffset", 0);
+
+                    // Add dots with a delay to match the line animation
+                    svg.selectAll(".dot")
+                        .data(data1)
+                        .enter().append("circle") // Adds a circle for each data point
+                        .attr("class", "dot")
+                        .attr("cx", function(d) { return x(d.year); })
+                        .attr("cy", function(d) { return y(d.value); })
+                        .attr("r", 0) // initial radius of circle set to 0 for animation
+                        .transition()
+                            .delay(function(d, i) { return i * (2000/data1.length); }) // delay for each dot, dividing total time by the number of data points
+                            .duration(500) // duration of the transition
+                            .attr("r", 3); // final radius of circle after transition
+                            
+                        // Add the annotation in a box
+                        var annotation = "Click here to review the trend post Covid-19";
+                        var textSize = 12; // Adjust this value based on your text size
+                        var padding = 10; // Padding around the text
+                        var textWidth = annotation.length * (textSize * 0.6); // Approximate width of text box
+                        var textHeight = textSize; // Height of text box
+                        var rectX = (width - textWidth) / 2 - padding; // X position of the rectangle
+                        var rectY = (height - textHeight) / 2 - padding; // Y position of the rectangle
+
+                        // Define the rectangle
+                        let rect = svg.append("rect")
+                            .attr("x", rectX)
+                            .attr("y", rectY)
+                            .attr("width", textWidth + 2 * padding)
+                            .attr("height", textHeight + 2 * padding)
+                            .style("fill", "white") // Change to your preferred box color
+                            .style("stroke", "black") // Change to your preferred border color
+                            .style("stroke-width", 1.5);
+
+                        svg.append("text")
+                            .attr("x", width / 2)
+                            .attr("y", (height / 2) + (textSize / 3)) // Adjust y position based on your text size
+                            .attr("text-anchor", "middle")
+                            .style("font-size", textSize + "px") // Change text size
+                            .attr("class", "center-annotation") // Assign a different unique class name
+                            .text(annotation);
+
+
+                    // Add event listener for click event
+                    rect.on("click", function() {
+                        svg.select(".center-annotation").text("The rate of death increased to 10% compared to 1% pre-Covid"); // remove the annotation
+
+                        // Continue the line
+                        var path2 = svg.append("path")
+                            .datum(data2)
+                            .attr("class", "line")
+                            .attr("d", line)
+                            .style("fill", "none")
+                            .style("stroke", "red")
+                            .style("stroke-width", 1.5);
+
+                        // Animate the line drawing
+                        var totalLength2 = path2.node().getTotalLength();
+
+                        path2.attr("stroke-dasharray", totalLength2 + " " + totalLength2)
+                            .attr("stroke-dashoffset", totalLength2)
+                            .transition()
+                                .duration(2000) // duration of animation in milliseconds
+                                .ease(d3.easeLinear)
+                                .attr("stroke-dashoffset", 0);
+
+                        // Add dots with a delay to match the line animation
+                        svg.selectAll(".dot2")
+                            .data(data2)
+                            .enter().append("circle") // Adds a circle for each data point
+                            .attr("class", "dot2")
+                            .attr("cx", function(d) { return x(d.year); })
+                            .attr("cy", function(d) { return y(d.value); })
+                            .attr("r", 0) // initial radius of circle set to 0 for animation
+                            .transition()
+                                .delay(function(d, i) { return i * (2000/data2.length); }) // delay for each dot, dividing total time by the number of data points
+                                .duration(500) // duration of the transition
+                                .attr("r", 3); // final radius of circle after transition
+                    });
+
+                    svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.axisBottom(x).tickValues(tickValues));
+
+                    svg.append("g")
+                    .attr("class", "y axis")
+                    .call(d3.axisLeft(y));
+            }
+            if (slideNumber == 2){
+                var currentRaceIndex = 0;
+                var annotationState = 0; // counter for annotation box state
+
+                svg.selectAll("*").remove();
+
+                // Draw the first race
+                drawRace(currentRaceIndex,data,'n',races_slide2,"");
+                // Add legend
+                var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", "translate(20, 20)"); // Adjust the translation to position the legend
+
+                    races.forEach((race, i) => {
+                    legend.append("circle")
+                    .attr("class", "legend-dot")
+                    .attr("cx", 0)
+                    .attr("cy", i * 25)
+                    .attr("r", 5)
+                    .style("fill", colorScaleRacesGenders(race));
+
+                    legend.append("text")
+                    .attr("class", "legend-text")
+                    .attr("x", 10)
+                    .attr("y", 5 + i * 25)
+                    .text(race);
+                });
+
+            // Axes
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).tickValues(tickValues));
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(d3.axisLeft(y));
+
+            var annotationBox;
+            var annotationText;
+
+            // Show message after animation finishes
+            setTimeout(function(){
+                var svgText1,svgText2;
+
+                svgText1 = svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2 - 10) // Slightly above the center
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px") 
+                .text("");
+
+                svgText2 = svg.append("text")
+                .attr("x", width / 2)
+                .attr("y", height / 2 + 10) // Slightly below the center
+                .attr("text-anchor", "middle")
+                .style("font-size", "20px") 
+                .text("");
+
+                var svgText = svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "20px") 
+                    .text("The trend across all racial groups has been going up");
+
+                        // Show annotation box and text 4 seconds after message
+                        setTimeout(function() {
+                            // Add annotation box
+                            var annotationBox = svg.append("rect")
+                                .attr("x", width - 500) // moving it to the right, change it according to your needs
+                                .attr("y", 0) // moving it to the top
+                                .attr("width", 500) // making it 5 times wider
+                                .attr("height", 50) // keeping the same height
+                                .attr("class", "annotation-box") // Assign a unique class name
+                                .style("fill", "lightgray");
+
+                            // Add text inside annotation box
+                            var annotationText = svg.append("text")
+                                .attr("x", width - 250) // adjust the text position accordingly
+                                .attr("y", 25) // moving text up to match the annotation box
+                                .text("Show Trends for African Americans") // Initial text
+                                .attr("text-anchor", "middle")
+                                .attr("dominant-baseline", "central");
+
+                            // Add click event listener to the annotation box
+                            annotationBox.on("click", function () {
+                                // Change the text inside the annotation box based on its state
+                                annotationState++;
+                                if (annotationState === 1) {
+                                    svgText.remove();
+                                    svgText1.text("The death rate for African Americans has increased");
+                                    svgText2.text("at a faster speed and exceeded the overall increase starting in 2018.");
+
+                                    annotationText.text("Show Trends for American Indians");
+                                } else if (annotationState === 2) {
+                                    annotationText.text("Use dropdown below to explore different races");
+
+                                    svgText1.text("American Indians has experienced the highest increase.");
+                                    svgText2.text("The death rate almost doubled the overall rate by 2021.");
+                                
+                                }
+                                // Change the race being displayed
+                                if (slideNumber == 2 && currentRaceIndex < races_slide2.length - 1) {
+                                    currentRaceIndex++;
+                                    if (currentRaceIndex == 2) {
+                                        drawRace(currentRaceIndex, data, 'y', races_slide2, "Black");
+                                    } else {
+                                        drawRace(currentRaceIndex, data, 'n', races_slide2, "");
+                                    }
+                                    drawRace(currentRaceIndex, data, 'n', races_slide2);
+                                }
+                            });
+
+                        }, 1000);
+                    }, 2000);
+            
+        }
+
+        else if (slideNumber == 3) {
+                    svg.selectAll("*").remove();
+
+                    genders_compare=["Male","Female"]
+                    genders_compare.forEach((gender, i) => {
+                        var genderData = data.filter(d => d.gender === gender);
+                        var totalDuration = genderData.length * 200 + 500; // Calculate total animation time for dots
+
+                        // Define the transition for the line and dots
+                        var lineTransition = svg.append("path")
+                            .datum(genderData)
+                            .attr("class", "line")
+                            .attr("d", line)
+                            .style("fill", "none")
+                            .style("stroke", colorScaleRacesGenders(gender))
+                            .style("stroke-width", 1.5)
+                            .attr("stroke-dasharray", function() { return this.getTotalLength(); })
+                            .attr("stroke-dashoffset", function() { return this.getTotalLength(); })
+                            .transition()
+                            .duration(totalDuration)
+                            .attr("stroke-dashoffset", 0);
+
+                        svg.selectAll(".dot-gender-" + i) // Use a unique class name for each gender
+                            .data(genderData)
+                            .enter()
+                            .append("circle")
+                            .attr("class", "dot dot-gender-" + i) // Assign the unique class name
+                            .attr("cx", function(d) { return x(d.year); })
+                            .attr("cy", function(d) { return y(d.value); })
+                            .attr("r", 0) // Initialize radius as 0
+                            .style("fill", colorScaleRacesGenders(gender)) // Set the dot color based on the gender
+                            .transition()
+                            .delay(function(d, i) { return i * 200; }) // Delay depends on order of data
+                            .duration(500)
+                            .attr("r", 3); // Final radius as 3
+
+                        // If it's the second gender (female), after the line transition ends, draw the area
+                        if (i === 1) {
+                            lineTransition
+                                .on("end", function() {
+                                    // Assuming you have the data for male and female stored separately
+                                    var maleData = data.filter(d => d.gender === "Male");
+                                    var femaleData = data.filter(d => d.gender === "Female");
+
+                                    // Combine male and female data into one array with the same years
+                                    var combinedData = maleData.map((d, i) => ({ year: d.year, maleValue: d.value, femaleValue: femaleData[i].value }));
+
+                                    // Define the area
+                                    var area = d3.area()
+                                        .x(function(d) { return x(d.year); })
+                                        .y0(function(d) { return y(d.maleValue); }) // start of the area (male line)
+                                        .y1(function(d) { return y(d.femaleValue); }); // end of the area (female line)
+
+                                    // Draw the area
+                                    svg.append("path")
+                                        .datum(combinedData)
+                                        .attr("class", "area")
+                                        .attr("d", area)
+                                        .style("fill", "yellow")
+                                        .style("opacity", 0.3);
+
+                                    // add annotationvar 
+                                    var date2009 = d3.timeParse("%Y")("2009");
+                                    var point2009 = data.filter(function(d) { return d.year.getTime() === date2009.getTime() && d.gender == "Male"; })[0];
+                                    // Pointer
+                                        svg.append("line")
+                                            .attr("x1", x(date2009))
+                                            .attr("y1", y(point2009.value)+20)
+                                            .attr("x2", x(date2009))
+                                            .attr("y2", y(point2009.value) - 50)  // Adjust this value as needed
+                                            .attr("stroke-width", 1)
+                                            .attr("stroke", "black");
+
+                                        // Annotation
+                                        svg.append("text")
+                                            .attr("x", x(date2009))
+                                            .attr("y", y(point2009.value) - 120)  // Adjust this value as needed
+                                            .attr("text-anchor", "middle")  // Center the text at the specified location
+                                            .html(function() {
+                                                    return `<tspan x="${x(date2009)}" dy="1.2em">For each year from 2001 through 2015,</tspan>
+                                                            <tspan x="${x(date2009)}" dy="1.2em">the rate for males was steadily higher</tspan>
+                                                            <tspan x="${x(date2009)}" dy="1.2em">than for females by ~75%.</tspan>
+                                                            `
+                                                });
+
+                                    // add annotationvar 
+                                    var date2018 = d3.timeParse("%Y")("2018");
+                                    var point2018 = data.filter(function(d) { return d.year.getTime() === date2018.getTime() && d.gender == "Male"; })[0];
+                                    // Pointer
+                                    svg.append("line")
+                                    .attr("x1", x(date2018))
+                                    .attr("y1", y(point2018.value)+20)
+                                    .attr("x2", x(date2018))
+                                    .attr("y2", y(point2018.value) - 50)  // Adjust this value as needed
+                                    .attr("stroke-width", 1)
+                                    .attr("stroke", "black");
+
+                                    // Annotation
+                                    svg.append("text")
+                                    .attr("x", x(date2018))
+                                    .attr("y", y(point2018.value) - 160)  // Adjust this value as needed
+                                    .attr("text-anchor", "middle")  // Center the text at the specified location
+                                    .html(function() {
+                                            return `<tspan x="${x(date2018)}" dy="1.2em">The gap widened post 2015,</tspan>
+                                                    <tspan x="${x(date2018)}" dy="1.2em">especially from 2018 through 2021,</tspan>
+                                                    <tspan x="${x(date2018)}" dy="1.2em">during which difference increased</tspan>
+                                                    <tspan x="${x(date2018)}" dy="1.2em">from 16 to 25 per100,000.</tspan>
+                                                    `
+                                            });
+                                });
+                        }
+                    });
+                    
+                    // Add legend
+                    var legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("transform", "translate(20, 20)"); // Adjust the translation to position the legend
+
+                    genders.forEach((gender, i) => {
+                        legend.append("circle")
+                            .attr("class", "legend-dot")
+                            .attr("cx", 0)
+                            .attr("cy", i * 25)
+                            .attr("r", 5)
+                            .style("fill", colorScaleRacesGenders(gender));
+
+                        legend.append("text")
+                            .attr("class", "legend-text")
+                            .attr("x", 10)
+                            .attr("y", 5 + i * 25)
+                            .text(gender);
+                    });
+
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(d3.axisBottom(x).tickValues(tickValues));
+
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(d3.axisLeft(y));
+                }
+        }
+
+        function drawChart(data) {
+            x.domain([d3.timeParse("%Y")("1999"), d3.timeParse("%Y")("2021")]); // x-axis from 1999 to 2021
+            y.domain([0, 70]); // replace 0 and 100 with the minimum and maximum y values you want
+
+            svg.selectAll("*").remove();
+            
+            svg.append("path")
+                .datum(data)
+                .attr("class", "line")
+                .attr("d", line)
+                .style("fill", "none")
+                .style("stroke", "black")
+                .style("stroke-width", 1.5);
+
+            svg.selectAll(".dot")
+                .data(data)
+                .enter().append("circle") // Adds a circle for each data point
+                .attr("class", "dot")
+                .attr("cx", function(d) { return x(d.year); })
+                .attr("cy", function(d) { return y(d.value); })
+                .attr("r", 3); // Radius of each circle
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x).tickValues(tickValues));
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(d3.axisLeft(y));
+        }
+        
+        
+        function showSlide(slideNumber) {
+            let raceSelect = document.getElementById("race");
+            let genderSelect = document.getElementById("gender");
+
+            if (slideNumber === 0 ){
+
+                text1 = "Drug overdose deaths have been rising over the past 2 decades in the United States.";
+                text2 = "In 2021, 106,699 drug overdose deaths occurred, resulting in an age-adjusted rate of 32.4 per 100,000 standard population.";
+                text3 = "Follow the options on the right to explore rates by demographic groups.";
+                
+                window.onload = function() {
+                    const displayText = document.getElementById("displayText");
+
+                    function showText(text, delayBetweenWords, wordsPerLine = 8) {
+                        displayText.innerHTML = "";
+                        let words = text.split(" ");
+                        let line = document.createElement("div");
+
+                        words.forEach((word, index) => {
+                            let span = document.createElement("span");
+                            span.className = "word";
+                            span.innerHTML = word + "&nbsp;";  // Add a non-breaking space after each word
+
+                            if (index % wordsPerLine === 0) {
+                                line = document.createElement("div");  // Create new line after every nth word
+                                displayText.appendChild(line);
+                            }
+
+                            line.appendChild(span);  // Add words to the current line
+
+                            setTimeout(() => {
+                                span.className += " show";
+                            }, index * delayBetweenWords);
+                        });
+                    }
+
+                    showText(text1, 100);
+
+                    setTimeout(function() {
+                        showText(text2, 100);
+                    }, text1.split(" ").length * 500);  // Extra delay for transition
+
+                    setTimeout(function() {
+                        showText(text3, 100);
+                    }, (text1.split(" ").length + text2.split(" ").length) * 500);  // Extra delay for transition
+            }
+
+            }
+            else {
+                let spanElements = document.getElementsByTagName("span");
+                while(spanElements[0]) {
+                    spanElements[0].parentNode.removeChild(spanElements[0]);
+                }
+            }
+            if (slideNumber === 1 ){
+                raceSelect.disabled = true;
+                genderSelect.disabled = true;
+                updateChartSlide(1);
+            }
+            else if(slideNumber === 2 ){
+                raceSelect.disabled = false;
+                genderSelect.disabled = true;
+                updateChartSlide(2);
+            }
+            else if(slideNumber === 3 ) {
+                raceSelect.disabled = true;
+                genderSelect.disabled = false;
+                updateChartSlide(3,);
+            }
+        }
+
+        loadData();
+        // showSlide(slideNumber);
+        
+    </script>
+</body>
+</html>
