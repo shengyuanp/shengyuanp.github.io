@@ -1,0 +1,346 @@
+year,value,gender,race
+1999,5.2,Female,American Indian
+2000,4.3,Female,American Indian
+2001,6.5,Female,American Indian
+2002,7.1,Female,American Indian
+2003,9.4,Female,American Indian
+2004,10.4,Female,American Indian
+2005,11.3,Female,American Indian
+2006,10.6,Female,American Indian
+2007,13.8,Female,American Indian
+2008,12.2,Female,American Indian
+2009,14,Female,American Indian
+2010,14.8,Female,American Indian
+2011,15.9,Female,American Indian
+2012,17.6,Female,American Indian
+2013,17.5,Female,American Indian
+2014,16.9,Female,American Indian
+2015,16.8,Female,American Indian
+2016,20.2,Female,American Indian
+2017,20.1,Female,American Indian
+2018,20.7,Female,American Indian
+2019,24.5,Female,American Indian
+2020,34,Female,American Indian
+2021,44.1,Female,American Indian
+1999,4,Female,Black
+2000,4.2,Female,Black
+2001,4.4,Female,Black
+2002,5.1,Female,Black
+2003,5.4,Female,Black
+2004,5.6,Female,Black
+2005,6.2,Female,Black
+2006,6.5,Female,Black
+2007,6.5,Female,Black
+2008,5.6,Female,Black
+2009,5.8,Female,Black
+2010,5.9,Female,Black
+2011,6.2,Female,Black
+2012,6.2,Female,Black
+2013,6.5,Female,Black
+2014,7.3,Female,Black
+2015,7.7,Female,Black
+2016,10.4,Female,Black
+2017,11.7,Female,Black
+2018,11.6,Female,Black
+2019,13.4,Female,Black
+2020,18.9,Female,Black
+2021,23.5,Female,Black
+1999,2.2,Female,Hispanic
+2000,2,Female,Hispanic
+2001,2.2,Female,Hispanic
+2002,2.7,Female,Hispanic
+2003,2.9,Female,Hispanic
+2004,2.9,Female,Hispanic
+2005,3,Female,Hispanic
+2006,3.4,Female,Hispanic
+2007,3.1,Female,Hispanic
+2008,3.2,Female,Hispanic
+2009,3.5,Female,Hispanic
+2010,3.6,Female,Hispanic
+2011,4,Female,Hispanic
+2012,4,Female,Hispanic
+2013,4.1,Female,Hispanic
+2014,4.1,Female,Hispanic
+2015,4.4,Female,Hispanic
+2016,5,Female,Hispanic
+2017,5.1,Female,Hispanic
+2018,5.2,Female,Hispanic
+2019,5.7,Female,Hispanic
+2020,7.5,Female,Hispanic
+2021,9.4,Female,Hispanic
+1999,3.9,Female,Overall
+2000,4.1,Female,Overall
+2001,4.6,Female,Overall
+2002,5.8,Female,Overall
+2003,6.4,Female,Overall
+2004,6.9,Female,Overall
+2005,7.3,Female,Overall
+2006,8.2,Female,Overall
+2007,8.8,Female,Overall
+2008,8.9,Female,Overall
+2009,9.1,Female,Overall
+2010,9.6,Female,Overall
+2011,10.2,Female,Overall
+2012,10.2,Female,Overall
+2013,10.6,Female,Overall
+2014,11.1,Female,Overall
+2015,11.8,Female,Overall
+2016,13.4,Female,Overall
+2017,14.4,Female,Overall
+2018,13.6,Female,Overall
+2019,13.7,Female,Overall
+2020,17.1,Female,Overall
+2021,19.6,Female,Overall
+1999,4.3,Female,White
+2000,4.5,Female,White
+2001,5.3,Female,White
+2002,6.8,Female,White
+2003,7.5,Female,White
+2004,8.3,Female,White
+2005,8.8,Female,White
+2006,10,Female,White
+2007,11,Female,White
+2008,11.4,Female,White
+2009,11.6,Female,White
+2010,12.5,Female,White
+2011,13.3,Female,White
+2012,13.2,Female,White
+2013,13.8,Female,White
+2014,14.6,Female,White
+2015,15.8,Female,White
+2016,17.7,Female,White
+2017,19.1,Female,White
+2018,18,Female,White
+2019,17.6,Female,White
+2020,21.5,Female,White
+2021,23.8,Female,White
+1999,6.704,Male,American Indian
+2000,6.661,Male,American Indian
+2001,7.479,Male,American Indian
+2002,9.998,Male,American Indian
+2003,12.179,Male,American Indian
+2004,14.657,Male,American Indian
+2005,14.907,Male,American Indian
+2006,17.576,Male,American Indian
+2007,14.482,Male,American Indian
+2008,19.573,Male,American Indian
+2009,21.538,Male,American Indian
+2010,18.951,Male,American Indian
+2011,20.481,Male,American Indian
+2012,20.128,Male,American Indian
+2013,19.85,Male,American Indian
+2014,25.008,Male,American Indian
+2015,25.795,Male,American Indian
+2016,28.327,Male,American Indian
+2017,31.505,Male,American Indian
+2018,33.1,Male,American Indian
+2019,36.6,Male,American Indian
+2020,51.2,Male,American Indian
+2021,69.3,Male,American Indian
+1999,11.5,Male,Black
+2000,10.9,Male,Black
+2001,11.2,Male,Black
+2002,11.7,Male,Black
+2003,11.6,Male,Black
+2004,11.4,Male,Black
+2005,13,Male,Black
+2006,15.7,Male,Black
+2007,13.3,Male,Black
+2008,11.6,Male,Black
+2009,11.1,Male,Black
+2010,10.5,Male,Black
+2011,11.3,Male,Black
+2012,11.6,Male,Black
+2013,13.3,Male,Black
+2014,14.2,Male,Black
+2015,17.3,Male,Black
+2016,24.7,Male,Black
+2017,30.8,Male,Black
+2018,32.4,Male,Black
+2019,37.7,Male,Black
+2020,54.8,Male,Black
+2021,67.3,Male,Black
+1999,8.6,Male,Hispanic
+2000,7.1,Male,Hispanic
+2001,6.7,Male,Hispanic
+2002,8,Male,Hispanic
+2003,8.3,Male,Hispanic
+2004,7.5,Male,Hispanic
+2005,8.4,Male,Hispanic
+2006,9.1,Male,Hispanic
+2007,8.7,Male,Hispanic
+2008,8.4,Male,Hispanic
+2009,8.2,Male,Hispanic
+2010,7.6,Male,Hispanic
+2011,8.1,Male,Hispanic
+2012,8.5,Male,Hispanic
+2013,9.2,Male,Hispanic
+2014,9.3,Male,Hispanic
+2015,10.9,Male,Hispanic
+2016,13.9,Male,Hispanic
+2017,15.9,Male,Hispanic
+2018,16.6,Male,Hispanic
+2019,19.5,Male,Hispanic
+2020,27.3,Male,Hispanic
+2021,32.4,Male,Hispanic
+1999,8.2,Male,Overall
+2000,8.3,Male,Overall
+2001,9,Male,Overall
+2002,10.6,Male,Overall
+2003,11.5,Male,Overall
+2004,11.8,Male,Overall
+2005,12.8,Male,Overall
+2006,14.8,Male,Overall
+2007,14.9,Male,Overall
+2008,14.9,Male,Overall
+2009,14.8,Male,Overall
+2010,15,Male,Overall
+2011,16.1,Male,Overall
+2012,16.1,Male,Overall
+2013,17,Male,Overall
+2014,18.3,Male,Overall
+2015,20.8,Male,Overall
+2016,26.2,Male,Overall
+2017,29.1,Male,Overall
+2018,27.9,Male,Overall
+2019,29.6,Male,Overall
+2020,39.5,Male,Overall
+2021,45.1,Male,Overall
+1999,8,Male,White
+2000,8.6,Male,White
+2001,9.6,Male,White
+2002,11.6,Male,White
+2003,12.9,Male,White
+2004,13.7,Male,White
+2005,14.7,Male,White
+2006,17.2,Male,White
+2007,18,Male,White
+2008,18.3,Male,White
+2009,18.3,Male,White
+2010,19,Male,White
+2011,20.5,Male,White
+2012,20.4,Male,White
+2013,21.4,Male,White
+2014,23.2,Male,White
+2015,26.2,Male,White
+2016,32.7,Male,White
+2017,35.8,Male,White
+2018,33.8,Male,White
+2019,34.5,Male,White
+2020,44.5,Male,White
+2021,49.4,Male,White
+1999,6,Overall,American Indian
+2000,5.5,Overall,American Indian
+2001,6.9,Overall,American Indian
+2002,8.5,Overall,American Indian
+2003,10.8,Overall,American Indian
+2004,12.5,Overall,American Indian
+2005,13.1,Overall,American Indian
+2006,14.1,Overall,American Indian
+2007,14.2,Overall,American Indian
+2008,15.8,Overall,American Indian
+2009,17.7,Overall,American Indian
+2010,16.8,Overall,American Indian
+2011,18.2,Overall,American Indian
+2012,18.9,Overall,American Indian
+2013,18.7,Overall,American Indian
+2014,20.9,Overall,American Indian
+2015,21.2,Overall,American Indian
+2016,24.2,Overall,American Indian
+2017,25.7,Overall,American Indian
+2018,26.8,Overall,American Indian
+2019,30.5,Overall,American Indian
+2020,42.5,Overall,American Indian
+2021,56.5,Overall,American Indian
+1999,7.5,Overall,Black
+2000,7.3,Overall,Black
+2001,7.6,Overall,Black
+2002,8.2,Overall,Black
+2003,8.2,Overall,Black
+2004,8.3,Overall,Black
+2005,9.3,Overall,Black
+2006,10.8,Overall,Black
+2007,9.7,Overall,Black
+2008,8.4,Overall,Black
+2009,8.3,Overall,Black
+2010,8,Overall,Black
+2011,8.5,Overall,Black
+2012,8.7,Overall,Black
+2013,9.7,Overall,Black
+2014,10.5,Overall,Black
+2015,12.2,Overall,Black
+2016,17.1,Overall,Black
+2017,20.6,Overall,Black
+2018,21.3,Overall,Black
+2019,24.8,Overall,Black
+2020,35.8,Overall,Black
+2021,44.2,Overall,Black
+1999,5.4,Overall,Hispanic
+2000,4.6,Overall,Hispanic
+2001,4.5,Overall,Hispanic
+2002,5.4,Overall,Hispanic
+2003,5.6,Overall,Hispanic
+2004,5.2,Overall,Hispanic
+2005,5.8,Overall,Hispanic
+2006,6.3,Overall,Hispanic
+2007,5.9,Overall,Hispanic
+2008,5.8,Overall,Hispanic
+2009,5.8,Overall,Hispanic
+2010,5.6,Overall,Hispanic
+2011,6.1,Overall,Hispanic
+2012,6.3,Overall,Hispanic
+2013,6.7,Overall,Hispanic
+2014,6.7,Overall,Hispanic
+2015,7.7,Overall,Hispanic
+2016,9.5,Overall,Hispanic
+2017,10.6,Overall,Hispanic
+2018,11,Overall,Hispanic
+2019,12.7,Overall,Hispanic
+2020,17.6,Overall,Hispanic
+2021,21.1,Overall,Hispanic
+1999,6.1,Overall,Overall
+2000,6.2,Overall,Overall
+2001,6.8,Overall,Overall
+2002,8.2,Overall,Overall
+2003,8.9,Overall,Overall
+2004,9.4,Overall,Overall
+2005,10.1,Overall,Overall
+2006,11.5,Overall,Overall
+2007,11.9,Overall,Overall
+2008,11.9,Overall,Overall
+2009,11.9,Overall,Overall
+2010,12.3,Overall,Overall
+2011,13.2,Overall,Overall
+2012,13.1,Overall,Overall
+2013,13.8,Overall,Overall
+2014,14.7,Overall,Overall
+2015,16.3,Overall,Overall
+2016,19.8,Overall,Overall
+2017,21.7,Overall,Overall
+2018,20.7,Overall,Overall
+2019,21.6,Overall,Overall
+2020,28.3,Overall,Overall
+2021,32.4,Overall,Overall
+1999,6.2,Overall,White
+2000,6.6,Overall,White
+2001,7.4,Overall,White
+2002,9.2,Overall,White
+2003,10.2,Overall,White
+2004,11,Overall,White
+2005,11.8,Overall,White
+2006,13.6,Overall,White
+2007,14.5,Overall,White
+2008,14.8,Overall,White
+2009,15,Overall,White
+2010,15.7,Overall,White
+2011,16.9,Overall,White
+2012,16.8,Overall,White
+2013,17.6,Overall,White
+2014,19,Overall,White
+2015,21.1,Overall,White
+2016,25.3,Overall,White
+2017,27.5,Overall,White
+2018,25.9,Overall,White
+2019,26.2,Overall,White
+2020,33.1,Overall,White
+2021,36.8,Overall,White
